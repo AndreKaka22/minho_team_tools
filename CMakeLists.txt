@@ -114,15 +114,15 @@ include_directories(${catkin_INCLUDE_DIRS} ${Boost_INCLUDE_DIR})
 list(APPEND CMAKE_CXX_FLAGS "${GAZEBO_CXX_FLAGS}")
 set(CURRQTPREFIX /opt/Qt/5.7/gcc_64)
 set(CMAKE_PREFIX_PATH ${CURRQTPREFIX})
-find_package(Qt5 COMPONENTS Core SerialPort Network Widgets REQUIRED)
+find_package(Qt5 COMPONENTS Core SerialPort Network Widgets PrintSupport REQUIRED)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTORCC ON)
 set(QT_DIR ${CURRQTPREFIX}/include)
-include_directories(${QT_DIR} ${QT_DIR}/QtCore ${QT_DIR}/QtConcurrent ${QT_DIR}/QtDesigner ${QT_DIR}/QtDesignerComponents
-${QT_DIR}/QtGui ${QT_DIR}/QtNetwork ${QT_DIR}/QtSerialPort ${QT_DIR}/QtWebSockets ${QT_DIR}/QtWidgets ${QT_DIR}/QtXml)
-set(qt_LIBRARIES libQt5SerialPort.so libQt5Core.so libQt5Widgets.so libQt5Network.so libQt5Gui.so libQt5Qml.so libQt5Quick.so)
+include_directories(${QT_DIR} ${QT_DIR}/QtCore
+${QT_DIR}/QtGui ${QT_DIR}/QtWidgets ${QT_DIR}/QtPrintSupport )
+set(qt_LIBRARIES libQt5Core.so libQt5Widgets.so libQt5Gui.so libQt5Quick.so libQt5PrintSupport.so)
 link_directories(${CURRQTPREFIX}/lib)
 add_definitions(-DQT_THREAD_SUPPORT)
 set(CMAKE_BUILD_TYPE Debug)
@@ -133,6 +133,13 @@ set(CMAKE_BUILD_TYPE Debug)
 include_directories(/usr/local/include/opencv /usr/local/include/opencv2)
 set (opencv_LIBRARIES libopencv_core.so libopencv_highgui.so libopencv_imgproc.so)
 link_directories(/usr/local/lib)
+link_directories(/usr/lib/x86_64-linux-gnu)
+########################################
+
+#Linking steps for QCUSTOMPLOT Libraries
+########################################
+include_directories(usr/include)
+set (qcustomplot_LIBRARIES libqcustomplot.so)
 link_directories(/usr/lib/x86_64-linux-gnu)
 ########################################
 ######################################################################
@@ -163,7 +170,7 @@ target_include_directories(vision_calib PUBLIC
 $<BUILD_INTERFACE:${VISIONCALIB_DIR}/include>)
 set_target_properties(vision_calib PROPERTIES COMPILE_FLAGS "-fPIC")
 target_compile_features(vision_calib PRIVATE cxx_range_for)
-target_link_libraries(vision_calib ${catkin_LIBRARIES} ${qt_LIBRARIES} ${opencv_LIBRARIES})
+target_link_libraries(vision_calib ${catkin_LIBRARIES} ${qt_LIBRARIES} ${opencv_LIBRARIES} ${qcustomplot_LIBRARIES})
 add_dependencies(vision_calib minho_team_ros_generate_messages_cpp)
 ######################################################################
 
